@@ -34,8 +34,8 @@ DateTime MyDateAndTime;
 
 // Which pin on the Arduino is connected to the NeoPixels?
 #define LEDCLOCK_PIN        18 // Arduino Nano Connect D6 = 18
-#define LEDCLOCKDOT_PIN     16 // Arduino Nano Connect D4 = 16
-#define LEDDOWNLIGHT_PIN    25 // Arduino Nano Connect D2 = 25
+#define LEDCLOCKDOT_PIN     19 // Arduino Nano Connect D7 = 19
+#define LEDDOWNLIGHT_PIN    20 // Arduino Nano Connect D8 = 20
 
 // How many NeoPixels are attached to the Arduino?
 //#define LEDCLOCK_COUNT      364
@@ -48,6 +48,7 @@ DateTime MyDateAndTime;
 // this hex method is the same as html colour codes just with "0x" instead of "#" in front
 uint32_t clockMinuteColour = 0x800000; // pure red 
 uint32_t clockHourColour = 0x008000;   // pure green
+uint32_t blue = 0x000080; // pure blue
 
 int clockFaceBrightness = 0;
 int ledsPerNumber = LEDCLOCK_COUNT / 4;
@@ -55,9 +56,9 @@ int ledsPerSegment = LEDCLOCK_COUNT / 4 / 7;
 char clockDotSwitch = '0';
 
 // Declare our NeoPixel objects:
-Adafruit_NeoPixel stripClock(LEDCLOCK_COUNT, LEDCLOCK_PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel stripClockDot(LEDCLOCKDOT_COUNT, LEDCLOCKDOT_PIN, NEO_GRB + NEO_KHZ800);
-//Adafruit_NeoPixel stripDownlighter(LEDDOWNLIGHT_COUNT, LEDDOWNLIGHT_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel stripClock = Adafruit_NeoPixel(LEDCLOCK_COUNT, LEDCLOCK_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel stripClockDot = Adafruit_NeoPixel(LEDCLOCKDOT_COUNT, LEDCLOCKDOT_PIN, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel stripDownlighter = Adafruit_NeoPixel(LEDDOWNLIGHT_COUNT, LEDDOWNLIGHT_PIN, NEO_GRB + NEO_KHZ800);
 // Argument 1 = Number of pixels in NeoPixel strip
 // Argument 2 = Arduino pin number (most are valid)
 // Argument 3 = Pixel type flags, add together as needed:
@@ -95,7 +96,7 @@ void setup() {
 
   stripClockDot.begin();           // INITIALIZE NeoPixel stripClock object (REQUIRED)
   stripClockDot.show();            // Turn OFF all pixels ASAP
-  stripClockDot.setBrightness(64); // Set inital BRIGHTNESS (max = 255)
+  stripClockDot.setBrightness(255); // Set inital BRIGHTNESS (max = 255)
  
   /*
   stripDownlighter.begin();           // INITIALIZE NeoPixel stripClock object (REQUIRED)
@@ -141,7 +142,7 @@ void increaseClock(){
 }
 
 void loop() {
-  
+  Serial.println("Loop start");
   //read the time
   //readTheTime();
   increaseClock();
@@ -200,13 +201,17 @@ void loop() {
     stripClockDot.clear();
     stripClockDot.show();
     clockDotSwitch = '0';
+    Serial.println("Dots off");
   }else{
     stripClockDot.fill(16777215);
     stripClockDot.show();
     clockDotSwitch = '1';
+    Serial.println("Dots on");
   }
-  
+  stripClockDot.fill(blue);
+  stripClockDot.show();
   delay(2000);
+  Serial.println("Loop end");
 }
 
 
